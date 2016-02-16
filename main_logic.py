@@ -48,7 +48,7 @@ def recursion_on_sites(url):
                     r2 = requests.get(r1.headers['Location'])
                     r2_server = r2.headers['Server']
                     if r2.url not in visited_sites:
-                        histogram[r1_server] = get_platform(r2_server)
+                        histogram[r2_server] = get_platform(r2_server)
 
                         visited_sites.append(r2.url)
                         queue.append(r1.url)
