@@ -34,7 +34,7 @@ def get_result_for_platform(platform_name):
     result = session.query(Server).\
               filter(Server.platform == platform_name).first()
 
-    return str(result.quntity)
+    return str(result.quantity)
 
 if __name__ == '__main__':
     app.run(debug=True)
