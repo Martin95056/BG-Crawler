@@ -25,43 +25,44 @@ def get_platform(server):
 
 
 def recursion_on_sites(url):
-    r = requests.get(url, timeout=0.1)
+    r = requests.get(url)
     data = r.text
     soup = BeautifulSoup(data, 'html.parser')
     for link in soup.find_all('a'):
         l = link.get('href')
-        if l[-1] is not '/':
-            l = l + '/'
-        try:
-            r1 = requests.get(l, timeout=0.1)
-            r1_server = r1.headers['Server']
-            if l not in visited_sites:
-                histogram[r1_server] = get_platform(r1_server)
-
-                visited_sites.append(l)
-                queue.append(r1.url)
-                print(test_print1)
-        except:
+        if type(l) is str:
+            if l[-1] is not '/':
+                l = l + '/'
             try:
-                r1 = requests.get(url + l, timeout=0.1)
-                r1_loc = r1.headers['Location']
+                r1 = requests.get(l, timeout=0.1)
                 r1_server = r1.headers['Server']
-                if r1_loc not in visited_sites:
+                if l not in visited_sites:
                     histogram[r1_server] = get_platform(r1_server)
 
-                    visited_sites.append(r1_loc)
+                    visited_sites.append(l)
                     queue.append(r1.url)
-                    print(test_print2)
+                    print(test_print1)
             except:
-                print(test_print3)
-                continue
+                try:
+                    r1 = requests.get(url + l, timeout=0.1)
+                    r1_loc = r1.headers['Location']
+                    r1_server = r1.headers['Server']
+                    if r1_loc not in visited_sites:
+                        histogram[r1_server] = get_platform(r1_server)
+
+                        visited_sites.append(r1_loc)
+                        queue.append(r1.url)
+                        print(test_print2)
+                except:
+                    print(test_print3)
+                    continue
 
     try:
         recursion_on_sites(queue.popleft())
     except:
         return
 
-recursion_on_sites('http://register.sites.bg/')
+recursion_on_sites('http://register.start.bg/')
 
 
 with open('servers_histogram.json', 'w') as f:
