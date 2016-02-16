@@ -45,12 +45,12 @@ def recursion_on_sites(url):
             except:
                 try:
                     r1 = requests.get(url + l, timeout=0.1)
-                    r1_loc = r1.headers['Location']
-                    r1_server = r1.headers['Server']
-                    if r1_loc not in visited_sites:
-                        histogram[r1_server] = get_platform(r1_server)
+                    r2 = requests.get(r1.headers['Location'])
+                    r2_server = r2.headers['Server']
+                    if r2.url not in visited_sites:
+                        histogram[r1_server] = get_platform(r2_server)
 
-                        visited_sites.append(r1_loc)
+                        visited_sites.append(r2.url)
                         queue.append(r1.url)
                         print(test_print2)
                 except:
@@ -66,4 +66,4 @@ recursion_on_sites('http://register.start.bg/')
 
 
 with open('servers_histogram.json', 'w') as f:
-    json.dump(histogram, f, ensure_ascii=False)
+    json.dump(histogram, f, ensure_ascii=False, indent=4)
