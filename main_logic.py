@@ -34,24 +34,26 @@ def recursion_on_sites(url):
             if l[-1] is not '/':
                 l = l + '/'
             try:
-                r1 = requests.get(l, timeout=0.1)
+                r1 = requests.get(l)
+                print(r1.url)
                 r1_server = r1.headers['Server']
-                if l not in visited_sites:
+                if r1 not in visited_sites:
                     histogram[r1_server] = get_platform(r1_server)
 
-                    visited_sites.append(l)
+                    visited_sites.append(r1)
                     queue.append(r1.url)
                     print(test_print1)
             except:
                 try:
-                    r1 = requests.get(url + l, timeout=0.1)
+                    r1 = requests.get(url + l)
                     r2 = requests.get(r1.headers['Location'])
+                    print(r2)
                     r2_server = r2.headers['Server']
-                    if r2.url not in visited_sites:
+                    if r2 not in visited_sites:
                         histogram[r2_server] = get_platform(r2_server)
 
-                        visited_sites.append(r2.url)
-                        queue.append(r1.url)
+                        visited_sites.append(r2)
+                        queue.append(r2.url)
                         print(test_print2)
                 except:
                     print(test_print3)
